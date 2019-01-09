@@ -11,7 +11,7 @@ import ba.fit.bookdiary.data.UserViewModel;
 public class MySession {
 
     private static final String SHARED_PREFERENCES = "SHARED_PREFERENCES";
-    private static final String USER = "USER";
+    private static final String USER = "SESSION_USER";
 
     public static void setUser(UserViewModel user){
         Gson gson = new GsonBuilder().create();
