@@ -3,13 +3,15 @@ package ba.fit.bookdiary.data;
 import java.io.Serializable;
 
 public class UserViewModel implements Serializable {
+    private int id;
     private String firstName;
     private String lastName;
     private String username;
     private String password;
 
-    public UserViewModel(String firstName, String lastName, String username, String password) {
+    public UserViewModel(int id, String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
+        this.id = id;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
@@ -17,6 +19,14 @@ public class UserViewModel implements Serializable {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {

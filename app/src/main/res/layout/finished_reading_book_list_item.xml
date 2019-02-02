@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="88dp"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/img"
+        android:src="@drawable/ic_notebook"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="16dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:id="@+id/bookTitleTextView"
+        android:layout_toRightOf="@id/img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Title"
+        android:textSize="16dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/bookAuthorTextView"
+        android:layout_below="@id/bookTitleTextView"
+        android:layout_toRightOf="@id/img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Author" />
+
+    <RatingBar
+        android:id="@+id/bookRatingBar"
+        android:layout_below="@id/bookAuthorTextView"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_toRightOf="@id/img"
+        android:numStars="5"
+        android:rating="3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/imgBtn"
+        android:layout_marginTop="8dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_menu_share" />
+
+    <TextView
+        android:id="@+id/dateFinishedTextView"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentRight="true"
+        android:text="16.01.2019."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -6,7 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:gravity="center_vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/annie_use_your_telescope"
+        android:gravity="center_horizontal"
+        android:text="Sign in"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:fontFamily="@font/annie_use_your_telescope"
+        android:gravity="center_horizontal"
+        android:text="Book Diary"
+        android:textColor="@color/primary"
+        android:textSize="44sp"
+        android:textStyle="bold" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -36,14 +57,19 @@
 
     <Button
         android:id="@+id/btnLogin"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:textColor="@android:color/white"
         android:text="Login"/>
 
     <TextView
         android:id="@+id/txtViewRegister"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Click to sign up"/>
+        android:gravity="center_horizontal"
+        android:text="Not a member? Sign up now."/>
 
 </LinearLayout>

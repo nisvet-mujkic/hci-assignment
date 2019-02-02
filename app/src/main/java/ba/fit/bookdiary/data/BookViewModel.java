@@ -3,18 +3,28 @@ package ba.fit.bookdiary.data;
 import java.io.Serializable;
 
 public class BookViewModel implements Serializable {
+    private int id;
     private String title;
     private String genre;
     private String author;
     private int pages;
     private int publishedIn;
 
-    public BookViewModel(String title, String genre, String author, int pages, int publishedIn) {
+    public BookViewModel(int id, String title, String genre, String author, int pages, int publishedIn) {
+        this.id = id;
         this.title = title;
         this.genre = genre;
         this.author = author;
         this.pages = pages;
         this.publishedIn = publishedIn;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

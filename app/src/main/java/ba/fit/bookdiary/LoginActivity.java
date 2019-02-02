@@ -9,8 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import ba.fit.bookdiary.data.AutentifikacijaLoginPostVM;
+import ba.fit.bookdiary.data.AutentifikacijaResultVM;
 import ba.fit.bookdiary.data.Storage;
 import ba.fit.bookdiary.data.UserViewModel;
+import ba.fit.bookdiary.helpers.MyApiRequest;
+import ba.fit.bookdiary.helpers.MyRunnable;
+import ba.fit.bookdiary.helpers.MySession;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -49,18 +54,31 @@ public class LoginActivity extends AppCompatActivity {
         String username = usernameLogin.getText().toString();
         String password = passwordLogin.getText().toString();
 
-        UserViewModel user = Storage.checkLoginStatus(username, password);
 
-        if(user != null){
-            startActivity(new Intent(this, MainActivity.class));
-        }
-        else{
-            View parentLayout = findViewById(android.R.id.content);
-            Snackbar.make(parentLayout, "Wrong username or password", Snackbar.LENGTH_LONG).show();
-        }
+        AutentifikacijaLoginPostVM model = new AutentifikacijaLoginPostVM(username, password, "");
+
+        MyApiRequest.post(this, "Autentifikacija/Login", model, new MyRunnable<AutentifikacijaResultVM>() {
+            @Override
+            public void run(AutentifikacijaResultVM x) {
+                checkLogin(x);
+            }
+        });
     }
 
     private void do_txtViewRegisterClick() {
         startActivity(new Intent(this, RegisterActivity.class));
+    }
+
+    private void checkLogin(AutentifikacijaResultVM x) {
+        if (x==null)
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar.make(parentLayout, "Pogrešan username/password", Snackbar.LENGTH_LONG).show();
+        }
+        else
+        {
+            MySession.setKorisnik(x);
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 }

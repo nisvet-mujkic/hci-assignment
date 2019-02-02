@@ -6,18 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".RegisterActivity"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:gravity="center_vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/annie_use_your_telescope"
+        android:gravity="center_horizontal"
+        android:text="Register"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:fontFamily="@font/annie_use_your_telescope"
+        android:gravity="center_horizontal"
+        android:text="Book Diary"
+        android:textColor="@color/primary"
+        android:textSize="44sp"
+        android:textStyle="bold" />
+
+    <View
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="#c0c0c0"/>
+
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/emailRegister"
+            android:id="@+id/usernameRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="Email Address"/>
+            android:hint="Username"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -50,8 +78,22 @@
 
     <Button
         android:id="@+id/signUpBtn"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:textColor="@android:color/white"
         android:text="Sign Up"/>
+
+    <Button
+        android:id="@+id/cancelSignUpBtn"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:textColor="@android:color/white"
+        android:text="Cancel"/>
+
+
 
 </LinearLayout>

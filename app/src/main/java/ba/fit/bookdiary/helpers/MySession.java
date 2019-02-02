@@ -2,38 +2,33 @@ package ba.fit.bookdiary.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import ba.fit.bookdiary.data.AutentifikacijaResultVM;
 
-import ba.fit.bookdiary.data.UserViewModel;
 
 public class MySession {
+    private static final String PREFS_NAME = "DatotekaZaSharedPrefernces";
+    private static String nekikey="Key_korisnik";
 
-    private static final String SHARED_PREFERENCES = "SHARED_PREFERENCES";
-    private static final String USER = "SESSION_USER";
-
-    public static void setUser(UserViewModel user){
-        Gson gson = new GsonBuilder().create();
-
-        String stringifiedUser = user != null ? gson.toJson(user) : "";
-
-        SharedPreferences sharedPreferences = MyApp.getContext().getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(USER, stringifiedUser);
-        editor.apply();
-    }
-
-    public static UserViewModel getUser(){
-        Gson gson = new GsonBuilder().create();
-
-        SharedPreferences sharedPreferences = MyApp.getContext().getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        String stringfiedUser = sharedPreferences.getString(USER, "");
-
-        if(stringfiedUser.length() == 0)
+    public static AutentifikacijaResultVM getKorisnik()
+    {
+        SharedPreferences sharedPreferences = MyApp.getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String strJson = sharedPreferences.getString(nekikey, "");
+        if (strJson.length() == 0)
             return null;
 
-        return gson.fromJson(stringfiedUser, UserViewModel.class);
+        AutentifikacijaResultVM x = MyGson.build().fromJson(strJson, AutentifikacijaResultVM.class);
+        return x;
     }
 
+    public static void setKorisnik(AutentifikacijaResultVM x)
+    {
+        String strJson = x!=null? MyGson.build().toJson(x):"";
+
+        SharedPreferences sharedPreferences = MyApp.getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(nekikey, strJson);
+        editor.apply();
+    }
 }
