@@ -1,5 +1,6 @@
 package ba.fit.bookdiary;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
+import ba.fit.bookdiary.ViewModels.CurrentlyReadingBooksViewModel;
 import ba.fit.bookdiary.ViewModels.EditProfileViewModel;
 import ba.fit.bookdiary.fragments.ChangePasswordFragment;
 import ba.fit.bookdiary.fragments.CurrentlyReadingBooksFragment;
@@ -25,6 +27,8 @@ import ba.fit.bookdiary.helpers.MySession;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +58,6 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        activity = this;
+
         if (id == R.id.nav_edit_profile) {
             EditProfileFragment editProfileFragment = EditProfileFragment.newInstance();
             FragmentUtils.openFragmentAsDialog(this, editProfileFragment, "editProfile");
@@ -107,16 +111,24 @@ public class MainActivity extends AppCompatActivity
             FragmentUtils.replaceFragment(this, R.id.placeholder, FinishedReadingFragment.newInstance());
         }
         else if (id == R.id.nav_logout) {
-            //MyApiRequest.delete(this, "Autentifikacija/Logout", null);
-            MySession.setKorisnik( null);
-            startActivity(new Intent(this, LoginActivity.class));
+            MyApiRequest.delete(this, "Autentifikacija/Delete", new MyRunnable<Object>() {
+                @Override
+                public void run(Object o) {
+                    MySession.setKorisnik( null);
+                    startActivity(new Intent(activity , LoginActivity.class));
+                }
+            });
         }
         else if (id == R.id.nav_change_password) {
             FragmentUtils.replaceFragment(this, R.id.placeholder, ChangePasswordFragment.newInstance());
         }
+        else if (id == R.id.homepage) {
+            FragmentUtils.replaceFragment(this, R.id.placeholder, CurrentlyReadingBooksFragment.newInstance());
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }

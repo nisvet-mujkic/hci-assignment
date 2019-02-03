@@ -27,27 +27,18 @@ import ba.fit.bookdiary.helpers.MyApiRequest;
 import ba.fit.bookdiary.helpers.MyRunnable;
 
 public class FinishedReadingFragment extends Fragment {
-
     private ListView finishedReadingListView;
     private BaseAdapter adapter;
     private SearchView searchView;
-    private FinishedBooksViewModel finishedBooks;
 
     public static FinishedReadingFragment newInstance() {
         FinishedReadingFragment fragment = new FinishedReadingFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-
-        }
     }
 
     @Override
@@ -115,8 +106,6 @@ public class FinishedReadingFragment extends Fragment {
                 }
 
                 FinishedBooksViewModel.Row review = data.rows.get(i);
-
-                //FinishedBooksViewModel.Row book = Storage.getBookById(review.getBookId());
 
                 TextView title = (TextView)view.findViewById(R.id.bookTitleTextView);
                 TextView author = (TextView)view.findViewById(R.id.bookAuthorTextView);

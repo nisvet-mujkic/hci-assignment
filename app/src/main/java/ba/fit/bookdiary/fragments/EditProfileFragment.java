@@ -34,9 +34,6 @@ public class EditProfileFragment extends DialogFragment {
 
     public static EditProfileFragment newInstance() {
         EditProfileFragment fragment = new EditProfileFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
         return fragment;
     }
 

@@ -5,10 +5,20 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/finishedReading"
-            android:icon="@drawable/ic_books"
-            android:title="Books Archive" />
+            android:id="@+id/homepage"
+            android:icon="@drawable/ic_bookshelf"
+            android:title="Currently Reading" />
     </group>
+
+    <item android:title="Library">
+        <menu>
+            <item
+                android:id="@+id/finishedReading"
+                android:icon="@drawable/ic_books"
+                android:title="Books Archive" />
+
+        </menu>
+    </item>
 
     <item android:title="Profile Management">
         <menu>

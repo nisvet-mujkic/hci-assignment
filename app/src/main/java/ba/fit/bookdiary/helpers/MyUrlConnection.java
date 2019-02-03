@@ -15,13 +15,10 @@ import java.net.URL;
 
 import ba.fit.bookdiary.data.AutentifikacijaResultVM;
 
-public class MyUrlConnection
-{
-    public enum HttpMethod
-    {
+public class MyUrlConnection {
+    public enum HttpMethod {
         GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE, PATCH
     }
-
 
     public static MyApiResult request(String urlString, HttpMethod httpMethod, String postData, String contentType) {
 
@@ -40,7 +37,7 @@ public class MyUrlConnection
             connection.setRequestProperty("Accept-Charset", charset);
 
             AutentifikacijaResultVM korisnik = MySession.getKorisnik();
-            connection.setRequestProperty("MyAuthToken", korisnik !=null? korisnik.token:"");
+            connection.setRequestProperty("MyAuthToken", korisnik != null ? korisnik.token : "");
 
             connection.setRequestMethod(httpMethod.toString());
             connection.setUseCaches(false);
@@ -60,17 +57,14 @@ public class MyUrlConnection
 
             int statusCode = connection.getResponseCode();
 
-            if (statusCode ==  200) {
+            if (statusCode == 200) {
 
                 InputStream inputStream = new BufferedInputStream(connection.getInputStream());
 
                 String response = convertToString(inputStream);
 
-                return  MyApiResult.OK(response);
+                return MyApiResult.OK(response);
             } else {
-                // Status code is not 200
-                // Do something to handle the error
-                //    InputStream inputStream = new BufferedInputStream(connection.getErrorStream());
                 String response = connection.getResponseMessage();
                 return MyApiResult.Error(statusCode, response);
             }
@@ -78,14 +72,12 @@ public class MyUrlConnection
         } catch (Exception e) {
             e.printStackTrace();
             return MyApiResult.Error(0, e.getMessage());
-        }
-        finally {
+        } finally {
             if (connection != null) {
                 connection.disconnect();
             }
         }
     }
-
 
 
     private static String convertToString(InputStream in) throws IOException {

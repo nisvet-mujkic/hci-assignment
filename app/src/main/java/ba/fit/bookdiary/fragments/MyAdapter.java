@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.Days;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,11 +37,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private CurrentlyReadingBooksViewModel model;
     private final ContextProvider mContextProvider;
 
-    public MyAdapter(ContextProvider contextProvider, CurrentlyReadingBooksViewModel m){
-        model = m;
+    public MyAdapter(ContextProvider contextProvider, CurrentlyReadingBooksViewModel model) {
+        this.model = model;
         this.mContextProvider = contextProvider;
     }
-
 
     @Override
     public int getItemCount() {
@@ -59,10 +60,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.display(book);
     }
 
-    public void getBooks(){
-        MyApiRequest.get((Activity)mContextProvider.getContext(), "Books/CurrentlyReading", new MyRunnable<CurrentlyReadingBooksViewModel>() {
+    public void getBooks() {
+        MyApiRequest.get((Activity) mContextProvider.getContext(), "Books/CurrentlyReading", new MyRunnable<CurrentlyReadingBooksViewModel>() {
             @Override
-            public void run(CurrentlyReadingBooksViewModel data){
+            public void run(CurrentlyReadingBooksViewModel data) {
                 model = data;
                 notifyDataSetChanged();
             }
@@ -70,7 +71,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     public int removeAt(int position) {
-
         int id = model.rows.get(position).bookId;
 
         model.rows.remove(position);
@@ -80,13 +80,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return id;
     }
 
-    public String getBookTitle(int position){
+    public String getBookTitle(int position) {
         return model.rows.get(position).title;
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-
         private final TextView name;
         private final TextView author;
         private final TextView dateAdded;
@@ -105,12 +104,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
                     final AlertDialog.Builder adb = new AlertDialog.Builder(mContextProvider.getContext());
                     adb.setTitle("Warning");
 
                     final int position = getAdapterPosition();
-
                     final int bookId = model.rows.get(position).bookId;
 
                     model.rows.remove(position);
@@ -123,7 +120,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
                             MyApiRequest.delete((Activity) mContextProvider.getContext(), "Books/Delete/" + bookId, new MyRunnable<Object>() {
                                 @Override
-                                public void run(Object o){
+                                public void run(Object o) {
                                     getBooks();
                                 }
                             });
@@ -132,7 +129,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     });
 
                     adb.setMessage("Do you want to delete book titled: " + currentBook.title);
-
 
                     adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
@@ -143,11 +139,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
                     adb.setIcon(android.R.drawable.ic_dialog_alert);
                     adb.show();
-
                     return false;
                 }
             });
-
         }
 
         public void display(CurrentlyReadingBooksViewModel.Row book) {
@@ -156,8 +150,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             author.setText(book.author);
 
             Date date = null;
+            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
-            DateFormat formatter = new SimpleDateFormat("mm/dd/yyyy");
             try {
                 date = formatter.parse(book.startedReadingOn);
             } catch (ParseException e) {
@@ -165,11 +159,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             }
 
             dateAdded.setText(formatter.format(date));
+
             dayTextView.setText(getDifferenceDays(new Date(), date));
         }
 
-        private String getDifferenceDays(Date d1, Date d2) {
-            long diff = d1.getTime() - d2.getTime();
+        private String getDifferenceDays(Date today, Date addedOn) {
+            long diff = today.getTime() - addedOn.getTime();
             return String.valueOf(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
         }
     }

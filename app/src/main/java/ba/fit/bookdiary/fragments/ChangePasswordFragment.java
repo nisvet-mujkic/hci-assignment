@@ -23,26 +23,18 @@ import ba.fit.bookdiary.helpers.MySession;
 
 
 public class ChangePasswordFragment extends Fragment {
-
-    private Button cancelChange;
     private Button change;
     private EditText repeatNewPassword;
     private EditText newPassword;
 
     public static ChangePasswordFragment newInstance() {
         ChangePasswordFragment fragment = new ChangePasswordFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -55,7 +47,6 @@ public class ChangePasswordFragment extends Fragment {
         repeatNewPassword = (EditText)view.findViewById(R.id.repeatNewPassword);
 
         change = (Button)view.findViewById(R.id.changePasswordBtn);
-        cancelChange = (Button)view.findViewById(R.id.cancelPasswordChangeBtn);
 
         view.findViewById(R.id.cancelPasswordChangeBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +69,6 @@ public class ChangePasswordFragment extends Fragment {
         String newPwd = newPassword.getText().toString().trim();
         String repeatNewPwd = repeatNewPassword.getText().toString().trim();
 
-
         if(newPwd.isEmpty()){
             newPassword.setError("You must enter a new password");
             return;
@@ -89,8 +79,7 @@ public class ChangePasswordFragment extends Fragment {
             return;
         }
 
-        ChangePasswordViewModel changePasswordViewModel = new ChangePasswordViewModel();
-        changePasswordViewModel.NewPassword = repeatNewPwd;
+        ChangePasswordViewModel changePasswordViewModel = new ChangePasswordViewModel(repeatNewPwd);
 
         MyApiRequest.post(getActivity(), "Accounts/ChangePassword", changePasswordViewModel, new MyRunnable<Object>() {
             @Override

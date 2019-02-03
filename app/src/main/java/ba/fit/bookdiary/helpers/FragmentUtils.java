@@ -11,9 +11,9 @@ public class FragmentUtils {
     public static void replaceFragment(Activity activity, int id, Fragment fragment) {
         FragmentManager fragmentManager = activity.getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         fragmentTransaction.replace(id, fragment);
         fragmentTransaction.addToBackStack(null);
+
         fragmentTransaction.commit();
     }
 

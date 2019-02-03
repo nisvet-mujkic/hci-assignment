@@ -7,10 +7,8 @@ public class MyApiResult
     public int resultCode = 0;
     public String value;
 
-
     private MyApiResult()
     {
-
     }
 
     public static MyApiResult Error(int exceptionCode, String exceptionMessage)

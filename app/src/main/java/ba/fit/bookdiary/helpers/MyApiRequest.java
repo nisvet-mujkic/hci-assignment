@@ -1,7 +1,6 @@
 package ba.fit.bookdiary.helpers;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -15,12 +14,6 @@ import ba.fit.bookdiary.LoginActivity;
 public class MyApiRequest {
     private static <T> void request(final Activity activity, final String urlAction, final MyUrlConnection.HttpMethod httpMethod, final Object postObject, final MyRunnable<T> myCallback) {
         new AsyncTask<Void, Void, MyApiResult>() {
-            private ProgressDialog progressDialog;
-
-            @Override
-            protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(activity, "Loading", "Sačekajte...");
-            }
 
             @Override
             protected MyApiResult doInBackground(Void... voids)
@@ -31,26 +24,23 @@ public class MyApiRequest {
 
             @Override
             protected void onPostExecute(MyApiResult result) {
-
-                progressDialog.dismiss();
-
                 if (result.isException)
                 {
                     if (result.resultCode == 401)
                     {
-                        Toast.makeText(activity, "Niste logirati", Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, "You have to be logged in", Toast.LENGTH_LONG).show();
                         activity.startActivity(new Intent(activity, LoginActivity.class));
                     }
                     else {
                         View parentLayout = activity.findViewById(android.R.id.content);
                         Snackbar snackbar;
                         if (result.resultCode == 0) {
-                            snackbar = Snackbar.make(parentLayout, "Greška u komunikaciji sa serverom.", Snackbar.LENGTH_LONG);
+                            snackbar = Snackbar.make(parentLayout, "Server error occurred", Snackbar.LENGTH_LONG);
                         } else {
-                            snackbar = Snackbar.make(parentLayout,  ErrorMessage.getErrorMesage(result.resultCode), Snackbar.LENGTH_LONG);
+                            snackbar = Snackbar.make(parentLayout,  ErrorMessage.getErrorMessage(result.resultCode), Snackbar.LENGTH_LONG);
                         }
 
-                        snackbar.setAction("Ponovi", new View.OnClickListener() {
+                        snackbar.setAction("Repeat", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 MyApiRequest.get(activity, urlAction, myCallback);
@@ -69,7 +59,7 @@ public class MyApiRequest {
                             x = MyGson.build().fromJson(result.value, genericType);
                         } catch (Exception e) {
                             View parentLayout = activity.findViewById(android.R.id.content);
-                            Snackbar.make(parentLayout, "Greška u aplikaciji. ", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(parentLayout, "Application error", Snackbar.LENGTH_LONG).show();
                         }
                         myCallback.run(x);
                     }

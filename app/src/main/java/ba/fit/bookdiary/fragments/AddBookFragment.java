@@ -1,6 +1,5 @@
 package ba.fit.bookdiary.fragments;
 
-
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -17,6 +16,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.Days;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -30,13 +31,11 @@ import ba.fit.bookdiary.R;
 import ba.fit.bookdiary.ViewModels.AddBookViewModel;
 import ba.fit.bookdiary.data.Storage;
 import ba.fit.bookdiary.helpers.MyApiRequest;
-
+import ba.fit.bookdiary.helpers.MyRunnable;
 
 public class AddBookFragment extends DialogFragment {
-
     private EditText bookTitle;
     private EditText bookAuthor;
-
     private EditText pages;
     private EditText date;
     private DatePickerDialog.OnDateSetListener dateSetListener;
@@ -44,19 +43,12 @@ public class AddBookFragment extends DialogFragment {
 
     public static AddBookFragment newInstance() {
         AddBookFragment fragment = new AddBookFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
-
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
 
@@ -65,15 +57,14 @@ public class AddBookFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_add_book, container, false);
 
-        bookTitle = (EditText)view.findViewById(R.id.bookTitleEditText);
-        bookAuthor = (EditText)view.findViewById(R.id.bookAuthorEditText);
-        genre = (EditText)view.findViewById(R.id.genreEditText);
-        pages = (EditText)view.findViewById(R.id.bookPagesEditText);
-        date = (EditText)view.findViewById(R.id.dateEditText);
-        date.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        bookTitle = (EditText) view.findViewById(R.id.bookTitleEditText);
+        bookAuthor = (EditText) view.findViewById(R.id.bookAuthorEditText);
+        genre = (EditText) view.findViewById(R.id.genreEditText);
+        pages = (EditText) view.findViewById(R.id.bookPagesEditText);
+        date = (EditText) view.findViewById(R.id.dateEditText);
+        date.setText(new SimpleDateFormat("MM/dd/yyyy").format(new Date()));
 
-        Button btnAdd = (Button)view.findViewById(R.id.newBookBtn);
-
+        Button btnAdd = (Button) view.findViewById(R.id.newBookBtn);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +79,7 @@ public class AddBookFragment extends DialogFragment {
             }
         });
 
-        TextView randomQuote = (TextView)view.findViewById(R.id.randomQuoteTextView);
+        TextView randomQuote = (TextView) view.findViewById(R.id.randomQuoteTextView);
         randomQuote.setText(Storage.getRandomQuote());
 
         date.setOnClickListener(new View.OnClickListener() {
@@ -99,8 +90,7 @@ public class AddBookFragment extends DialogFragment {
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dialog = new DatePickerDialog(getActivity(), dateSetListener , year, month, day);
-
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), dateSetListener, year, month, day);
                 dialog.show();
             }
         });
@@ -108,9 +98,7 @@ public class AddBookFragment extends DialogFragment {
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
-                month += 1;
-
-                String selectedDate = year + "-" + month + "-" +  day;
+                String selectedDate = (month + 1) + "/" + day + "/" + year;
                 date.setText(selectedDate);
             }
         };
@@ -119,26 +107,25 @@ public class AddBookFragment extends DialogFragment {
     }
 
     private void do_newBookBtnClick() {
-        AddBookViewModel viewModel = new AddBookViewModel();
-
-        try{
-            viewModel.Title = bookTitle.getText().toString();
-            viewModel.Author = bookAuthor.getText().toString();
-            viewModel.Genre = genre.getText().toString();
-            viewModel.Pages = Integer.parseInt(pages.getText().toString());
-
+        try {
             String inputString = date.getText().toString();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             Date parsedDate = formatter.parse(inputString);
 
-            viewModel.StartedReadingOn = parsedDate;
+            AddBookViewModel viewModel = new AddBookViewModel(bookTitle.getText().toString(),
+                    bookAuthor.getText().toString(), genre.getText().toString(),
+                    Integer.parseInt(pages.getText().toString()), parsedDate);
 
-            MyApiRequest.post(getActivity(), "Books/AddBook", viewModel, null);
-            startActivity(new Intent(getActivity(), MainActivity.class));
-        }catch(Exception e){
-            Toast.makeText(getActivity(), "Greška: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            MyApiRequest.post(getActivity(), "Books/AddBook", viewModel, new MyRunnable<Object>() {
+                @Override
+                public void run(Object o) {
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+                }
+            });
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
 
 }

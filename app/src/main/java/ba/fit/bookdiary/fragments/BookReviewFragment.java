@@ -17,6 +17,8 @@ import ba.fit.bookdiary.ViewModels.BookReviewPostViewModel;
 import ba.fit.bookdiary.ViewModels.BookReviewViewModel;
 import ba.fit.bookdiary.helpers.FragmentUtils;
 import ba.fit.bookdiary.helpers.MyApiRequest;
+import ba.fit.bookdiary.helpers.MyRunnable;
+import ba.fit.bookdiary.helpers.MySession;
 
 public class BookReviewFragment extends DialogFragment {
 
@@ -29,6 +31,7 @@ public class BookReviewFragment extends DialogFragment {
     private EditText quoteEditText;
     private RatingBar mark;
     private Button saveReviewBtn;
+    private int bookId;
 
     public static BookReviewFragment newInstance(BookReviewViewModel bookReview) {
         BookReviewFragment fragment = new BookReviewFragment();
@@ -44,7 +47,6 @@ public class BookReviewFragment extends DialogFragment {
         if (getArguments() != null) {
             review = (BookReviewViewModel) getArguments().getSerializable(KEY);
         }
-
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
 
@@ -66,11 +68,11 @@ public class BookReviewFragment extends DialogFragment {
         title.setText(review.title);
         author.setText(review.author);
         genre.setText(review.genre);
+        bookId = review.bookId;
 
         reviewEditText.setText(review.review);
         quoteEditText.setText(review.quoteToRemember);
         mark.setRating(review.mark);
-
 
         view.findViewById(R.id.closeBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +93,7 @@ public class BookReviewFragment extends DialogFragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                share();
+                share(bookId);
             }
         });
 
@@ -105,17 +107,37 @@ public class BookReviewFragment extends DialogFragment {
         postViewModel.quoteToRemember = quoteEditText.getText().toString();
         postViewModel.review = reviewEditText.getText().toString();
 
-        MyApiRequest.post(getActivity(), "Books/BookReview", postViewModel, null);
-        FinishedReadingFragment finishedReadingFragment = FinishedReadingFragment.newInstance();
+        MyApiRequest.post(getActivity(), "Books/BookReview", postViewModel, new MyRunnable<Object>() {
+            @Override
+            public void run(Object o) {
+                FinishedReadingFragment finishedReadingFragment = FinishedReadingFragment.newInstance();
+                FragmentUtils.replaceFragment(getActivity(), R.id.placeholder, finishedReadingFragment);
 
-        FragmentUtils.replaceFragment(getActivity(), R.id.placeholder, finishedReadingFragment);
+                getDialog().dismiss();
+            }
+        });
     }
 
-    private void share() {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+    private void share(int bookId) {
+        final Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
 
-        startActivity(Intent.createChooser(sharingIntent, "Share via"));
-    }
+        MyApiRequest.get(getActivity(), "Books/FindReview/" + bookId, new MyRunnable<BookReviewViewModel>() {
+            @Override
+            public void run(BookReviewViewModel model){
 
+                String shareBodyText = "I have just finished reading this book titled " + model.title
+                        + ".\nHere is my short review:\n" + model.review +
+                        "\nI also selected one special quote to remember:\n" + model.quoteToRemember
+                        + "\n\nMy overall mark for this book is " + model.mark + ".\n\nHope you find this book interesting."
+                        + "\n\nKind regards,\n" + MySession.getKorisnik().ime + " " + MySession.getKorisnik().prezime;
+
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My review of the book: " + model.title);
+
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
+        });
+    }
 }

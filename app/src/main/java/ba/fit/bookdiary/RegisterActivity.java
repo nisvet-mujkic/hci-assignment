@@ -1,5 +1,7 @@
 package ba.fit.bookdiary;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +15,11 @@ import ba.fit.bookdiary.helpers.MyObjects;
 import ba.fit.bookdiary.helpers.MyRunnable;
 
 public class RegisterActivity extends AppCompatActivity {
-
     private EditText passwordRepeat;
     private EditText password;
     private EditText username;
-    private Button cancelSignUp;
     private Button signUp;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,13 @@ public class RegisterActivity extends AppCompatActivity {
         passwordRepeat = (EditText)findViewById(R.id.repeatPasswordRegister);
 
         signUp = (Button)findViewById(R.id.signUpBtn);
-        cancelSignUp = (Button)findViewById(R.id.cancelSignUpBtn);
+
+        findViewById(R.id.cancelSignUpBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               RegisterActivity.super.onBackPressed();
+            }
+        });
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,14 +67,14 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        UserRegisterViewModel user = new UserRegisterViewModel();
-        user.Password = pwd;
-        user.Username = usernameStr;
+        UserRegisterViewModel user = new UserRegisterViewModel(usernameStr, pwd);
 
-        MyApiRequest.post(this, "Accounts", user, new MyRunnable<KorisnikPregledVM>(){
+        activity = this;
+
+        MyApiRequest.post(this, "Register", user, new MyRunnable<Object>() {
             @Override
-            public void run(KorisnikPregledVM x){
-
+            public void run(Object o) {
+                startActivity(new Intent(activity, LoginActivity.class));
             }
         });
     }
